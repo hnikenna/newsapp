@@ -1,0 +1,41 @@
+DATABASE MODEL FOR NEWS SITE
+
+USER-
+    FIRST NAME
+    LAST NAME
+    USERNAME
+    EMAIL
+    PHONE NUMBER
+    PASSWORD
+    GENDER
+    COMMENTS
+    QUESTIONS
+    ACTIVE POINTS
+    VERIFIED
+    PHOTO
+    BIO
+
+
+ARTICLE-
+    TITLE
+    DESCRIPTION
+    IMAGE
+    DATE CREATED
+    SOURCE
+    SLUG
+    TAG
+    VOTES
+        AGREE
+        DISAGREE
+    PUBLISHER
+    is DRAFT
+    COMMENT-
+        USERNAME
+        PARENT
+        TEXT
+        VOTES
+            AGREE
+            DISAGREE
+        REPLY
+        AWards
+        Date

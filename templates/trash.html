@@ -1,0 +1,23 @@
+<!--INITIAL AWARD DROPDOWN OPTION-->
+<a class="dropdown">
+                                                                <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="{% static 'img/badge.png' %}" class="button">Award</a>
+                                                                <div class="dropdown-menu ml-5" aria-labelledby="navbarDropdown">
+                                                                        {% if comment.awards|length < 1 %}
+                                                                        <p class="dropdown-item" style="color: red;">You do not have any award to give</p>
+                                                                        {%else%}
+                                                                        <h5 class="text-center">Your Awards</h5>
+                                                                        {% for awarditem in comment.awards %}
+                                                                        <a class="dropdown-item" href="#">
+                                                                            <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}"
+                                                                                 alt="{{awarditem.award.name}} - Award"
+                                                                                 title="{{ awarditem.award.name}}"
+                                                                                 class="award-none"
+                                                                            >{{ awarditem.award.name}}<strong class="d-flex" style="justify-content: right;">0</strong></a>
+                                                                        {% endfor %}
+                                                                        {%endif%}
+                                                                        <div class="dropdown-divider"></div>
+                                                                        <a href="#" class="dropdown-item">Get Awards</a>
+                                                                    </div>
+                                                            </a>
+
+<!--END SEGMENT-->

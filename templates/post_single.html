@@ -1,0 +1,481 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{ article.title }}
+{% endblock %}
+{% block content %}
+
+
+<div class="text-center">
+  <img src="{{ MEDIA_URL }}{{ article.image }}" class="rounded header-image" alt="..." width="80%">
+<!--  <img src="{% static 'img/banner3.jpg' %}" class="rounded" alt="..." width="80%">-->
+        <h2 style="text-decoration: overline;">{{ article.title }}</h2>
+        <div class="d-flex justify-content-between">
+            <a href="#discussion"> Go to Discussion <span style="font-weight: 400; font-size: 20px;">&#8595</span> </a>
+            <p>{{ article.date }} - <span class="time">{{article.time_ago }}</span> <img src="{% static 'img/dot_button.png' %}" width="5%"> <a href="#"> {{ article.username }}</a></p>
+        </div>
+
+</div>
+
+
+<hr/>
+<div class="row">
+        <div class="col-12 col-lg-9">
+                <h3><strong>{{ article.header_text }}</strong></h3>
+                <div id="mid-content">
+                    <div class="pcontent">
+                        <p style="font-size: 100px;">
+                            {{ article.get_mid_content|linebreaks }}
+                        <div class="gradientback"></div>
+                        </p>
+                    </div>
+                    <button class="btn btn-main" id="read-more">Read More</button>
+                </div>
+                <div style="display: none;" id="full-content">
+                    <p style="font-size: 100px;">
+                        {{ article.content|linebreaks }}
+                    </p>
+                    <p>Source: <a href="{{ article.source_url }}" target="_blank">{{ article.source_name }}</a></p>
+                    <p><a href="/" ><button class="btn btn-main">&#8592 Go to Feed</button></a></p>
+
+                </div>
+
+        </div>
+
+<!--        Top Comments Section-->
+        <div class="col-3 d-none d-lg-block">
+                <h3 class="text-center">You might also like...</h3><hr/>
+            {% for article in featured %}
+                <div class="card sidebar">
+                    <div class="card-content text-center">
+                            <a href="#" style="text-decoration: none;">
+                                <h5 class="zoom" style="font-weight: bold;">
+                                    {{ article.title }}
+                                </h5>
+                            </a>
+                            <div class="d-flex justify-content-between">
+                                <div class="container text-center">
+                                    <h5 class="absTitle">{{ article.yes_vote }}</h5>
+                                    <img src="{% static 'img/white_people.png' %}" width="40%" class="/*vote*/" data-slug="{{ article.slug }}" data-poll="no">
+                                    <p class="absText">Agree</p>
+                                </div>
+                                <div class="container text-center">
+                                    <h5 class="absTitle">{{ article.no_vote }}</h5>
+                                    <img src="{% static 'img/black_people.png' %}" width="40%" class="/*vote*/" data-slug="{{ article.slug }}" data-poll="no">
+                                    <p class="absText">Disagree</p>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                </div><br>
+            {% endfor %}
+        </div>
+
+</div>
+<br/>
+<div class="text-center col-12">
+<!--        <h3>Sign Up / Log In to discuss</h3>-->
+        <h3>Where do you stand on this topic?</h3>
+            <div class="row" id="articlevotes">
+                <div class="col">
+                        <h2 id="yesvote"><strong>{{ article.yes_vote }}</strong></h2>
+                        <img src="{% static 'img/white_people.png' %}" width="20%" class="vote {{article.selectYV}}" data-slug="{{ article.slug }}" data-poll="yes">
+                        <p><strong>Agree</strong></p>
+                </div>
+                <div class="col">
+                        <h2 id="novote"><strong>{{ article.no_vote }}</strong></h2>
+                        <img src="{% static 'img/black_people.png' %}" width="20%" class="vote {{article.selectNV}}" data-slug="{{ article.slug }}" data-poll="no">
+                        <p><strong>Disagree</strong></p>
+                </div>
+        </div>
+<!--        <hr/>-->
+<!--        <h3>Discussions</h3>-->
+
+</div>
+
+<div class="container mb-5 mt-5" style="position: relative;">
+
+			     <div class="card"  id="discussion">
+					<div class="row">
+						<div class="col-md-12">
+                                <div class="commentHeader"><!-- define relative so child absolute's are based on this elements origin -->
+                                        <h3 class="text-center mb-5">Discussion</h3>
+                                        <button class="btn btn-main addComment mt-5" id="addCommentBtn">Add comment</button>
+                                        <button class="btn btn-main addComment mt-5" style="display: none;" id="cancelBtn">Cancel</button>
+                                </div>
+                            <hr style=" height: 2px; border: 0;  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));">
+                            <div id="commentbox" style="display: none;">
+                                    <form method="post" id="commentForm" action="add_comment">
+                                        {% csrf_token %}
+<!--                                        <input type="hidden" name="article" value="{{article.slug}}">-->
+                                        <textarea class="form-control mr-sm-2" name="content" style="height: 100px;" id="textbox" required></textarea>
+                                        <button class="btn btn-dark my-2 my-sm-0" type="submit">Send</button>
+                                    </form>
+                            </div>
+                            {% for comment in article.comments %}
+                            <div class="row">
+                                <div class="col-md-12">
+									<div class="media mt-4">
+<!--										<img class="mr-3 rounded-circle" alt="Bootstrap Media Preview" src="https://i.imgur.com/xELPaag.jpg" />-->
+                                        <a class="pr-3" href="#"><img class="rounded-circle" alt="Sholake Adeyemi" src="https://i.imgur.com/xELPaag.jpg" /></a>
+
+										<div class="media-body">
+											<div class="row">
+											    <div class="col-8 d-inline-flex">
+                                                     <h5>
+                                                         <!--{{comment.author.username}}-->
+                                                         <span>Sholake Adeyemi<img src="{% static 'img/verify.png' %}" class="verified text-center"></span>
+<!--                                                         <span>Sholake Adeyemi ({{comment.author.username}})<img src="{% static 'img/verify.png' %}" class="verified text-center"></span>-->
+                                                         <span class="time">- {{comment.time_ago }}</span>
+                                                     </h5>
+											 </div>
+                                                {% if comment.is_award %}
+                                                <div class="d-block d-lg-none ml-4 text-center" style="height: 30px;">
+                                                    {% for awarditem in comment.awards %}
+                                                    <img
+                                                            src="{% static 'img/awards' %}/{{ awarditem.award.image }}"
+                                                            alt="{{awarditem.award.name}} - Award"
+                                                            title="{{ awarditem.award.name }}"
+                                                            class="award-{{ awarditem.award.animation }}"
+
+                                                    ><strong>{{ awarditem.award_quantity }}</strong>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+
+
+
+											</div>
+                                            <div class="row">
+<!--                                                Comment Text Area-->
+                                                    <div class="col-sm-10 pt-0">
+
+                                                        {{ comment.content|safe|linebreaks }}
+
+                                                        <div class="commentActions">
+                                                            <img src="{% static 'img/up-arrow.png' %}"
+                                                                 class="button comment-vote
+                                                                    {%for vJ in comment.get_votes%}
+                                                                        {% if vJ.voter == request.user and vJ.choice == 'yes' %}
+                                                                                selected
+                                                                                {% else %}
+                                                                                not
+
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                    "
+                                                                 data-poll="yes"
+                                                                 data-comment="{{comment.id}}"
+                                                                 data-article="{{ article.slug }}"
+
+                                                            >{{ comment.yes_vote }}
+                                                            <span>&nbsp;</span>
+                                                            <img src="{% static 'img/down-arrow.png' %}"
+                                                                 class="button
+                                                                        comment-vote
+                                                                        {%for vJ in comment.get_votes%}
+                                                                            {% if vJ.voter == request.user and vJ.choice == 'no' %}
+                                                                                selected
+                                                                            {% else %}
+                                                                                not
+
+                                                                            {% endif %}
+                                                                        {% endfor %}
+
+                                                                 "
+                                                                 data-poll="no"
+                                                                 data-comment="{{comment.id}}"
+                                                                 data-article="{{ article.slug }}"
+                                                            >{{ comment.no_vote }}
+                                                            <a class="replybtn button" data-comment="{{comment.id}}"><img src="{% static 'img/reply-message.png' %}" class="button">Reply</a>
+                                                            <a><img src="{% static 'img/send.png' %}" class="button">Share</a>
+                                                            <a class="awardBtn {{comment.id}}"><img src="{% static 'img/badge.png' %}" class="button">Award</a>
+                                                            <a><img src="{% static 'img/police.png' %}" class="button">Report</a>
+                                                        </div>
+                                                        <div class="container db ml-5 mb-3 pb-3 pt-2" id="db-{{comment.id}}">
+                                                                <div class="row">
+                                                                        {% if user.awards|length < 1 %}
+                                                                    <div class="col"  style="display: flex; justify-content: center; align-items: center;">
+                                                                        <div class="text-center">
+                                                                            <img src="{% static 'img/cancel.png' %}" width="90%"><br>
+                                                                            <p class="dropdown-item" style="color: red;">You do not have any award to gift</p>
+
+                                                                        </div>
+                                                                        {%else%}
+                                                                        <div class="col">
+                                                                        <h5 class="text-center">Your Awards</h5>
+                                                                            <div class="dropdown-divider"></div>
+                                                                        {% for awarditem in user.awards %}
+                                                                        <a class="dropdown-item" href="#">
+                                                                            <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}"
+                                                                                 alt="{{awarditem.award.name}} - Award"
+                                                                                 title="{{ awarditem.award.name}}"
+                                                                                 class="award-none"
+                                                                            >{{ awarditem.award.name}}<strong class="d-flex" style="justify-content: right;">1</strong></a>
+                                                                        {% endfor %}
+                                                                        {%endif%}
+
+                                                                    </div>
+                                                                    <div class="col border-left">
+                                                                        <h5 class="text-center">Get Awards</h5>
+                                                                        <div class="dropdown-divider"></div>
+                                                                        <table>
+                                                                            <tr class="text-center">
+                                                                                <th width="15%"> </th>
+                                                                                <th width="60%"> </th>
+                                                                                <th> </th>
+                                                                            </tr>
+                                                                            {% for award in all_awards %}
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div style="position: absolute;">
+                                                                                        <img src="{% static 'img/awards' %}/{{ award.image }}"
+                                                                                             alt="{{award.name}} - Award"
+                                                                                             title="{{ award.name}}"
+                                                                                             class="award-{{ award.animation }}"
+                                                                                        >
+                                                                                    </div>
+
+                                                                                </td>
+                                                                                <td>
+                                                                                    <br>
+                                                                                    <h5>{{ award.name}}</h5>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <br>
+                                                                                    <p class="d-flex" style="justify-content: right; color: purple;">₦{{award.price}}</p>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <br>
+                                                                                    <button class="btn btn-outline-dark ml-4" onclick="dev();">Buy</button>
+
+                                                                                </td>
+                                                                            </tr>
+                                                                            {% endfor %}
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+
+
+
+                                                        </div>
+
+
+<!--                                                        Reply Box-->
+                                                        <div style="display: none;" id="replybox-{{comment.id}}">
+                                                            <form method="post" action="/add_reply/">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="comment" value="{{comment.id}}">
+                                                                <input type="hidden" name="recipent" value="Sholake Adeyemi">
+<!--                                                                <input type="hidden" name="recipent" value="Sholake Adeyemi ({{comment.author.username}})">-->
+                                                                <textarea class="form-control mr-sm-2" name="content" id="textbox-{{comment.id}}" style="height: 70px;" required></textarea>
+                                                                <button class="btn btn-dark my-2 my-sm-0" type="submit">Send</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+
+<!--                                                Awards-->
+                                                <div class="col-2 d-none d-lg-block text-center">
+                                                    {% for awarditem in comment.awards %}
+                                                    <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}" alt="{{awarditem.award.name}} - Award" title="{{ awarditem.award.name}}" class="award-{{ awarditem.award.animation }}"><strong>{{ awarditem.award_quantity }}</strong>
+                                                    {% endfor %}
+
+                                                </div>
+                                            </div>
+
+
+<!--                                        <div class="border-left pl-3">-->
+
+                                        {% for reply in comment.replies %}
+                                        <div class="media mt-4 pt-0">
+                                            <a class="pr-3" href="#"><img class="rounded-circle" alt="Mr Banks" src="https://i.imgur.com/nUNhspp.jpg" /></a>
+                                            <div class="media-body">
+
+                                                <div class="row">
+                                                    <div class="col-12 d-inline-flex">
+                                                         <h5>
+                                                             <!--{{reply.author.username}}-->
+                                                             <span>
+                                                                 Mr Banks<!--<img src="{% static 'img/verify.png' %}" class="verified text-center">-->
+<!--                                                                 Mr Banks ({{reply.author.username}})&lt;!&ndash;<img src="{% static 'img/verify.png' %}" class="verified text-center">&ndash;&gt;-->
+                                                             </span>
+                                                             <span class="time">- {{ reply.time_ago }}</span>
+                                                         </h5>
+                                                 </div>
+
+                                                    {% if reply.is_award %}
+                                                    <div class="d-block d-lg-none ml-4 text-center" style="height: 30px;">
+                                                        {% for awarditem in reply.awards %}
+                                                        <img
+                                                                src="{% static 'img/awards' %}/{{ awarditem.award.image }}"
+                                                                alt="{{awarditem.award.name}} - Award"
+                                                                title="{{ awarditem.award.name}}"
+                                                                class="award-{{ awarditem.award.animation }}"
+                                                        >
+                                                        <strong>{{ awarditem.award_quantity }}</strong>
+                                                        {% endfor %}
+                                                    </div>
+                                                    {% endif %}
+
+
+                                                </div>
+                                                <div class="row">
+                                                <div class="col-sm-10 pt-0">
+                                                        {{ reply.content|safe|linebreaks }}
+                                                        <div class="commentActions">
+                                                            <img src="{% static 'img/up-arrow.png' %}"
+                                                                 class="button
+                                                                        reply-vote
+                                                                        {%for vJ in reply.get_votes%}
+                                                                            {% if vJ.voter == request.user and vJ.choice == 'yes' %}
+                                                                                    selected
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                        "
+                                                                 data-poll="yes"
+                                                                 data-comment="{{comment.id}}"
+                                                                 data-reply="{{reply.id}}"
+                                                                 data-article="{{ article.slug }}"
+                                                            >{{ reply.yes_vote }}
+                                                            <img src="{% static 'img/down-arrow.png' %}"
+                                                                 class="button
+                                                                        reply-vote
+                                                                        {%for vJ in reply.get_votes%}
+                                                                            {% if vJ.voter == request.user and vJ.choice == 'no' %}
+                                                                                    selected
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                 "
+                                                                 data-poll="no"
+                                                                 data-comment="{{comment.id}}"
+                                                                 data-reply="{{reply.id}}"
+                                                                 data-article="{{ article.slug }}"
+                                                            >{{ reply.no_vote }}
+                                                            <a class="subreplybtn button" data-reply="{{comment.id}}-{{reply.id}}"><img src="{% static 'img/reply-message.png' %}" class="button">Reply</a>
+                                                            <a><img src="{% static 'img/send.png' %}" class="button">Share</a>
+                                                            <!--                                                            <a href="#"><img src="{% static 'img/badge.png' %}" class="button">Award</a>-->
+                                                            <a class="awardBtn {{comment.id}}-{{reply.id}}"><img src="{% static 'img/badge.png' %}" class="button">Award</a>
+                                                            <a><img src="{% static 'img/police.png' %}" class="button">Report</a>
+                                                            <div class="container db ml-5 mb-3 pb-3 pt-2" id="db-{{comment.id}}-{{reply.id}}">
+                                                                <div class="row">
+                                                                        {% if user.awards|length < 1 %}
+                                                                    <div class="col"  style="display: flex; justify-content: center; align-items: center;">
+                                                                        <div class="text-center">
+                                                                            <img src="{% static 'img/cancel.png' %}" width="90%"><br>
+                                                                            <p class="dropdown-item" style="color: red;">You do not have any award to gift</p>
+
+                                                                        </div>
+                                                                        {%else%}
+                                                                        <div class="col">
+                                                                        <h5 class="text-center">Your Awards</h5>
+                                                                            <div class="dropdown-divider"></div>
+                                                                        {% for awarditem in user.awards %}
+                                                                        <a class="dropdown-item" href="#">
+                                                                            <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}"
+                                                                                 alt="{{awarditem.award.name}} - Award"
+                                                                                 title="{{ awarditem.award.name}}"
+                                                                                 class="award-none"
+                                                                            >{{ awarditem.award.name}}<strong class="d-flex" style="justify-content: right;">1</strong></a>
+                                                                        {% endfor %}
+                                                                        {%endif%}
+
+                                                                    </div>
+                                                                    <div class="col border-left">
+                                                                        <h5 class="text-center">Get Awards</h5>
+                                                                        <div class="dropdown-divider"></div>
+                                                                        <table>
+                                                                            <tr class="text-center">
+                                                                                <th width="15%"> </th>
+                                                                                <th width="60%"> </th>
+                                                                                <th> </th>
+<!--                                                                                <th>Image</th>-->
+<!--                                                                                <th style="width:60%">Name</th>-->
+<!--                                                                                <th>Price</th>-->
+<!--                                                                                <th>Quantity</th>-->
+
+                                                                            </tr>
+                                                                            {% for award in all_awards %}
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div style="position: absolute;">
+                                                                                        <img src="{% static 'img/awards' %}/{{ award.image }}"
+                                                                                             alt="{{award.name}} - Award"
+                                                                                             title="{{ award.name}}"
+                                                                                             class="award-{{ award.animation }}"
+                                                                                        >
+                                                                                    </div>
+
+                                                                                </td>
+                                                                                <td>
+                                                                                    <br>
+                                                                                    <h5>{{ award.name}}</h5>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <br>
+                                                                                    <p class="d-flex" style="justify-content: right; color: purple;">₦{{award.price}}</p>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <br>
+                                                                                    <button class="btn btn-outline-dark ml-4" onclick="dev();">Buy</button>
+
+                                                                                </td>
+                                                                            </tr>
+                                                                            {% endfor %}
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                        </div>
+
+
+                                                        </div>
+                                                        <div style="display: none;" id="subreplybox-{{comment.id}}-{{reply.id}}">
+                                                            <form method="post" action="/add_reply/">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="comment" value="{{comment.id}}">
+                                                                <input type="hidden" name="recipent" value="Mr Banks">
+<!--                                                                <input type="hidden" name="recipent" value="Mr Banks ({{reply.author.username}})">-->
+                                                                <textarea class="form-control mr-sm-2" name="content"
+                                                                          id="subtextbox-{{comment.id}}-{{reply.id}}"
+                                                                          style="height: 70px;"
+                                                                          required
+                                                                ></textarea>
+                                                                <button class="btn btn-dark my-2 my-sm-0" type="submit">Send</button>
+                                                            </form>
+                                                        </div>
+
+                                                    </div>
+
+<!--                                                    Awards-->
+
+                                                <div class="col-2 d-none d-lg-block text-center">
+                                                    {% for awarditem in reply.awards %}
+                                                    <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}" alt="{{awarditem.award.name}} - Award" title="{{ awarditem.award.name}}" class="award-{{ awarditem.award.animation }}"><strong>{{ awarditem.award_quantity }}</strong>
+                                                    {% endfor %}
+
+
+                                                </div>
+
+                                            </div>
+
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+<!--                                        </div>-->
+
+										</div>
+									</div>
+
+								</div>
+                            </div>
+                            {% endfor %}
+						</div>
+					</div>
+                </div>
+</div>
+
+{% endblock %}
+
+</div>

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block home_active %}active{% endblock %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<!--			Top News Section-->
+			<div class="col-md-12 noPadding text-center">
+				<h1 class="titleText">TOP NEWS TODAY</h1>
+				<hr/>
+<!--				<img class="withBottom" src="{% static 'img/shapegreen.png' %}">-->
+			</div>
+
+<!--			News Section-->
+			{% for article in all_article_list reversed %}
+			<div class="col-md-12 noPadding">
+				<div class="filterBack" style="
+				background: url({{ MEDIA_URL }}{{ article.image }});
+				background-position: top;
+				background-size: cover;
+				min-height: 350px;
+				color: red;
+				font-weight: bold;
+				background-attachment: fixed;
+			">
+<!--				<div class="filterBack"></div>-->
+					<div class="abs text-center">
+						<div class="container">
+							<div class="row" style="color: #E8ECE8;">
+								<div class="col-3">
+									<h2 class="absTitle">{{ article.yes_vote }}</h2>
+									<img src="{% static 'img/white_people.png' %}" width="40%" class="/*vote*/" data-slug="{{ article.slug }}" data-poll="yes">
+									<p class="absText">Agree</p>
+								</div>
+								<div class="col-6">
+
+									<h2 class="d-none d-lg-block absTitle">{{ article.get_title }}</h2>
+									<h3 class="d-block d-lg-none absTitle">{{ article.get_short_title }}</h3>
+
+									<p class="d-none d-md-block absText">
+										<img src="{% static 'img/shape.png' %}"><br>
+<!--									<p class="col-md-12">-->
+										{{ article.get_short_content }}
+									</p>
+									<p class="d-block d-md-none absText">
+										<img src="{% static 'img/shape.png' %}"><br>
+<!--									<p class="col-md-12">-->
+										{{ article.get_shorter_content }}
+									</p>
+
+									<a href="{{ article.get_absolute_url }}"><button class="btn btn-main zoom">View Post</button></a>
+								</div>
+								<div class="col-3">
+									<h2 class="absTitle">{{ article.no_vote }}</h2>
+									<img src="{% static 'img/black_people.png' %}" width="40%" class="/*vote*/" data-slug="{{ article.slug }}" data-poll="no">
+									<p class="absText">Disagree</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+<!--			Seperator-->
+			<div class="col-md-12 noPadding text-center">
+				<br/><br/><br/>
+				<br/><br/><br/>
+<!--				<h1 class="mainText">Price Table</h1>-->
+<!--				<img class="withBottom" src="{% static 'img/shapegreen.png' %}">-->
+			</div>
+
+			{% endfor %}
+
+<!--&lt;!&ndash;			Price Table Section&ndash;&gt;-->
+<!--			<div class="col-md-12 noPadding text-center">-->
+<!--				<h1 class="mainText">Your Feed</h1>-->
+<!--				<img class="withBottom" src="{% static 'img/shapegreen.png' %}">-->
+<!--			</div>-->
+
+<!--&lt;!&ndash;			Fully Responsive Section&ndash;&gt;-->
+<!--			<div class="col-md-12 noPadding">-->
+<!--				<div class="filterBack" style="background: url(static/img/gdp.jpg);"></div>-->
+<!--&lt;!&ndash;				<div class="filterBack"></div>&ndash;&gt;-->
+<!--					<div class="abs text-center">-->
+<!--						<div class="col-md-3">-->
+<!--							<h2 class="absTitle">20</h2>-->
+<!--							<img src="{% static 'img/white_people.png' %}" width="40%">-->
+<!--							<p class="absText">Agree</p>-->
+<!--						</div>-->
+<!--						<div class="col-md-6">-->
+<!--							<h2 class="absTitle">PDP Holds Re-Run Primaries For Reps, Abia Assembly Candidates In Ohafia Amidst Tight Security</h2>-->
+<!--							<img src="{% static 'img/shape.png' %}">-->
+<!--							<p class="absText">-->
+<!--							The governing People's Democratic Party PDP in Abia is about now holding primaries to elect candidates for Ohafia South State House of Assembly and Arochukwu/Ohafia federal constituency, ABN TV reports.-->
+
+<!--							</p>-->
+<!--							<button class="btn btn-primary">Go to Discussion</button>-->
+<!--						</div>-->
+<!--						<div class="col-md-3">-->
+<!--							<h2 class="absTitle">30</h2>-->
+<!--							<img src="{% static 'img/black_people.png' %}" width="40%">-->
+<!--							<p class="absText">Disagree</p>-->
+<!--						</div>-->
+
+<!--					</div>-->
+<!--				</div>-->
+
+
+
+
+{% endblock %}
