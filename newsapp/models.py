@@ -34,10 +34,18 @@ class Award(models.Model):
 class AwardItem(models.Model):
 
     award = models.ForeignKey(Award, on_delete=models.PROTECT)
-    award_quantity = models.PositiveIntegerField(default=0)
+    quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return str(self.award_quantity) + ' - ' + self.award.name
+        return str(self.quantity) + ' - ' + self.award.name
+
+    def save(self, *args, **kwargs):
+        try:
+            if self.quantity <= 0:
+                self.delete()
+        except:
+            pass  # when new photo then we do nothing, normal case
+        super().save(*args, **kwargs)
 
 
 class Reply(models.Model):
@@ -278,3 +286,4 @@ class VoteItem(models.Model):
 
     def __str__(self):
         return self.parent + ' - ' + self.voter.username
+

@@ -249,15 +249,16 @@ def addComment(request, slug):
     if form.is_valid():
         data = form.cleaned_data
         content = data['content']
-        # content = request.POST.get('content')
-        # print('Content:', content)
-        # slug = slug
         article = get_object_or_404(Article, slug=slug)
         comment = Comment(author=user, content=content)
+        comment.yes_vote += 1
         comment.save()
+
+        # Add user vote as an upvote
+        voteitem = VoteItem(voter=user, parent='c', parent_id=comment.id, comment=comment, choice='yes')
+        voteitem.save()
         article.comment.add(comment)
         article.save()
-        print('Comment Added')
 
     else:
         print('Form ain\'t valid')
@@ -277,7 +278,6 @@ def addReply(request):
     if not user.is_authenticated:
         return JsonResponse('User is guest', safe=False)
 
-
     if form.is_valid():
         data = form.cleaned_data
         print(data)
@@ -288,9 +288,14 @@ def addReply(request):
         comment = data['comment']
         comment = get_object_or_404(Comment, id=comment)
         reply = Reply(author=user, content=content)
+        reply.yes_vote += 1
         reply.save()
         comment.reply.add(reply)
         comment.save()
+
+        # Add user vote as an upvote
+        voteitem = VoteItem(voter=user, parent='r', parent_id=reply.id, reply=reply, choice='yes')
+        voteitem.save()
         print('Sub-Reply Added')
 
 

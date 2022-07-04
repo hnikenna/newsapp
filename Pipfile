@@ -11,6 +11,7 @@ pillow = "*"
 django-tagging = "*"
 datetime = "*"
 django-crispy-forms = "*"
+django-imagekit = "*"
 
 [dev-packages]
 

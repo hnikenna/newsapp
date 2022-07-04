@@ -233,219 +233,6 @@ body{
 
 }
 
-.pricePadd span{
-    font-size: 30px;
-}
-
-.pricePadd p{
-    font-family: 'Montserrat', sans-serif;
-    font-weight: bold;
-}
-
-#myCarouselNew .carousel {
-	max-width: 650px;
-	margin: 0 auto;
-    padding-bottom: 50px;
-    margin-top: 40px;
-    margin-bottom: 40px;
-
-}
-#myCarouselNew .carousel .item {
-	color: #999;
-	font-size: 14px;
-    text-align: center;
-	overflow: hidden;
-    min-height: 340px;
-    font-family: 'Montserrat', sans-serif;
-
-}
-#myCarouselNew .carousel .item a {
-	color: #eb7245;
-}
-#myCarouselNew .carousel .img-box {
-	width: 145px;
-	height: 145px;
-	margin: 0 auto;
-	border-radius: 50%;
-}
-#myCarouselNew .carousel .img-box img {
-	width: 100%;
-	height: 100%;
-	display: block;
-	border-radius: 50%;
-}
-#myCarouselNew .carousel .testimonial {
-	padding: 30px 0 10px;
-}
-#myCarouselNew .carousel .overview {
-	text-align: center;
-	padding-bottom: 5px;
-}
-#myCarouselNew .carousel .overview b {
-	color: #333;
-	font-size: 15px;
-	text-transform: uppercase;
-	display: block;
-	padding-bottom: 5px;
-}
-#myCarouselNew .carousel .star-rating i {
-	font-size: 18px;
-	color: #ffdc12;
-}
-#myCarouselNew .carousel .carousel-control {
-	width: 30px;
-	height: 30px;
-	border-radius: 50%;
-    background: #999;
-    text-shadow: none;
-	top: 4px;
-}
-#myCarouselNew .carousel-control i {
-	font-size: 20px;
-	margin-right: 2px;
-}
-#myCarouselNew .carousel-control.left {
-	left: auto;
-	right: 40px;
-}
-#myCarouselNew .carousel-control.right i {
-	margin-right: -2px;
-}
-#myCarouselNew .carousel .carousel-indicators {
-	bottom: 15px;
-}
-#myCarouselNew .carousel-indicators li, .carousel-indicators li.active {
-	width: 11px;
-	height: 11px;
-	margin: 1px 5px;
-	border-radius: 50%;
-}
-#myCarouselNew .carousel-indicators li {
-	background: #e2e2e2;
-	border-color: transparent;
-}
-#myCarouselNew .carousel-indicators li.active {
-	border: none;
-	background: #888;
-}
-
-.noTop{
-    margin-top: 0px;
-    font-family: 'Montserrat', sans-serif;
-    letter-spacing: 1px;
-}
-
-.myInputFooter{
-    background: transparent;
-    border-radius: 0px;
-    border-color: #dddddd40;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-family: 'Montserrat', sans-serif;
-    margin-bottom: 10px;
-}
-
-.myInputFooter:focus{
-    outline: 0px;
-    border: 1px solid #ddd;
-    box-shadow: none;
-}
-
-.backNewsletter{
-
-    padding: 40px;
-    background: #f6f6f6;
-
-}
-
-.backFooter{
-    padding: 40px;
-
-}
-
-.footertext {
-    text-align: start;
-    /* font-size: 16px; */
-    /* font-weight: bold; */
-    font-family: 'Montserrat', sans-serif;
-    letter-spacing: 1px;
-    margin-top: 0px;
-    font-weight: bold;
-    line-height: 1.1;
-    /* margin-left: 10px; */
-    font-size: 16px;
-    /* font-size: 24px; */
-}
-
-#carousel-example-generic .carousel-control.left {
-    background: none !important;
-}
-
-
-#carousel-example-generic .carousel-control.right {
-    background: none !important;
-}
-
-#carousel-example-generic .carousel-control .glyphicon-chevron-left,
-#carousel-example-generic .carousel-control .glyphicon-chevron-right,
-#carousel-example-generic .carousel-control .icon-next,
-#carousel-example-generic .carousel-control .icon-prev {
-    width: 40px;
-    height: 40px;
-    margin-top: -10px;
-    font-size: 18px;
-    border-radius: 20px;
-    padding: 10px;
-}
-
-#carousel-example-generic .carousel-indicators .active {
-    width: 12px;
-    height: 12px;
-    margin: 0;
-    background-color: #00e099;
-    border: aliceblue;
-}
-
-#carousel-example-generic-main .carousel-control.left {
-    background: none !important;
-}
-
-
-#carousel-example-generic-main .carousel-control.right {
-    background: none !important;
-}
-
-#carousel-example-generic-main .carousel-control .glyphicon-chevron-left,
-#carousel-example-generic-main .carousel-control .glyphicon-chevron-right,
-#carousel-example-generic-main .carousel-control .icon-next,
-#carousel-example-generic-main .carousel-control .icon-prev {
-    width: 40px;
-    height: 40px;
-    margin-top: -10px;
-    font-size: 18px;
-    border-radius: 20px;
-    padding: 10px;
-}
-
-#carousel-example-generic-main .carousel-indicators .active {
-    width: 12px;
-    height: 12px;
-    margin: 0;
-    background-color: #00e099;
-    border: aliceblue;
-}
-
-.list-group-item {
-    border-left: 0px;
-    border-right: 0px;
-}
-
-.myButton:focus {
-        outline: 0px;
-        border: 1px solid #ddd;
-        box-shadow: none;
-}
-
 .btn-default.active.focus,
 .btn-default.active:focus,
 .btn-default.active:hover,
@@ -1371,11 +1158,17 @@ a:hover {
 
 .center {
   margin: auto;
-  width: 50%;
+  width: 65%;
   border: 2px solid black;
   border-radius: 20px;
   padding: 10px;
 }
+
+.topcorner{
+   position:absolute;
+   top: 0;
+   right:0;
+  }
 
 .media-body {
     z-index: 1;
@@ -1421,4 +1214,42 @@ html {
 .btn-main:hover {
     color: white;
     background-color: #4D1C4A;
+}
+
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+/* Control the left side */
+.left {
+  left: 0;
+}
+
+/* Control the right side */
+.right {
+  right: 0;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+/* Style the image inside the centered container, if needed */
+.centered img {
+  width: 150px;
+  border-radius: 100%;
+}
+
+input[type="checkbox"]:checked {
+    background: rgba(0, 0, 0, 0);
 }

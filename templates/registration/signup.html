@@ -1,13 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'core.html' %}
 {% load crispy_forms_tags %}
-{% block signup_active %}active{% endblock %}
-{% block title %}Sign Up{% endblock %}
-        {% block content %}
-        <br>
-        <h2>Sign up</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button class="btn btn-dark" type="submit">Sign up</button>
-        </form>
-{% endblock content %}
+{% block title %}Sign up{% endblock %}
+{% block head %}
+                <h2  class="text-center" style="font-weight: bolder;">Create an account</h2>
+                <p  class="text-center">Already have an account? <a href="/accounts/login/" style="text-decoration: ;">Sign in</a></p>
+{% endblock %}
+{% block form %}
+{{ form|crispy }}
+<input type="checkbox" id="termsbox"required> By checking this box I agree to the <a href="#">Terms & Conditions.</a><br>
+
+<br>
+<button class="btn btn-main" style="width: 100%;" type="submit"><i class="fa fa-lg fa-envelope pull-left" aria-hidden="true" style="width: 32px;"></i>Continue with email</button><br><br>
+<!--<div id="my-signin2"></div><hr>-->
+<!--<div class="g-signin2 pull-right" data-onsuccess="onSignIn"></div>-->
+<div id="buttonDiv" data-text="continue_with"></div><br>
+<!--<div class="fb-login-button" style="width: 200%;" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false"></div>-->
+{% endblock %}

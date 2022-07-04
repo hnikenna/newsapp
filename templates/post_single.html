@@ -120,15 +120,16 @@
                                 <div class="col-md-12">
 									<div class="media mt-4">
 <!--										<img class="mr-3 rounded-circle" alt="Bootstrap Media Preview" src="https://i.imgur.com/xELPaag.jpg" />-->
-                                        <a class="pr-3" href="#"><img class="rounded-circle" alt="Sholake Adeyemi" src="https://i.imgur.com/xELPaag.jpg" /></a>
+<!--                                        <a class="pr-3" href="#"><img class="rounded-circle" alt="Sholake Adeyemi" src="https://i.imgur.com/xELPaag.jpg" /></a>-->
+                                        <a class="pr-3" href="#"><img class="rounded-circle" alt="{{comment.author.name}}" src="{{ MEDIA_URL }}{{ comment.author.avatar }}" /></a>
 
 										<div class="media-body">
 											<div class="row">
 											    <div class="col-8 d-inline-flex">
                                                      <h5>
                                                          <!--{{comment.author.username}}-->
-                                                         <span>Sholake Adeyemi<img src="{% static 'img/verify.png' %}" class="verified text-center"></span>
-<!--                                                         <span>Sholake Adeyemi ({{comment.author.username}})<img src="{% static 'img/verify.png' %}" class="verified text-center"></span>-->
+                                                         <span>
+                                                             {{comment.author.name}}{% if comment.author.is_verified %}<img src="{% static 'img/verify.png' %}" class="verified text-center">{%endif%}</span>
                                                          <span class="time">- {{comment.time_ago }}</span>
                                                      </h5>
 											 </div>
@@ -141,7 +142,7 @@
                                                             title="{{ awarditem.award.name }}"
                                                             class="award-{{ awarditem.award.animation }}"
 
-                                                    ><strong>{{ awarditem.award_quantity }}</strong>
+                                                    ><strong>{{ awarditem.quantity }}</strong>
                                                     {% endfor %}
                                                 </div>
                                                 {% endif %}
@@ -214,7 +215,7 @@
                                                                                  alt="{{awarditem.award.name}} - Award"
                                                                                  title="{{ awarditem.award.name}}"
                                                                                  class="award-none"
-                                                                            >{{ awarditem.award.name}}<strong class="d-flex" style="justify-content: right;">1</strong></a>
+                                                                            >{{ awarditem.award.name}}<strong class="d-flex" style="justify-content: right;">{{ awarditem.quantity}}</strong></a>
                                                                         {% endfor %}
                                                                         {%endif%}
 
@@ -269,8 +270,8 @@
                                                             <form method="post" action="/add_reply/">
                                                                 {% csrf_token %}
                                                                 <input type="hidden" name="comment" value="{{comment.id}}">
-                                                                <input type="hidden" name="recipent" value="Sholake Adeyemi">
-<!--                                                                <input type="hidden" name="recipent" value="Sholake Adeyemi ({{comment.author.username}})">-->
+<!--                                                                <input type="hidden" name="recipent" value="Sholake Adeyemi">-->
+                                                                <input type="hidden" name="recipent" value="{{comment.author.name}}">
                                                                 <textarea class="form-control mr-sm-2" name="content" id="textbox-{{comment.id}}" style="height: 70px;" required></textarea>
                                                                 <button class="btn btn-dark my-2 my-sm-0" type="submit">Send</button>
                                                             </form>
@@ -280,7 +281,7 @@
 <!--                                                Awards-->
                                                 <div class="col-2 d-none d-lg-block text-center">
                                                     {% for awarditem in comment.awards %}
-                                                    <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}" alt="{{awarditem.award.name}} - Award" title="{{ awarditem.award.name}}" class="award-{{ awarditem.award.animation }}"><strong>{{ awarditem.award_quantity }}</strong>
+                                                    <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}" alt="{{awarditem.award.name}} - Award" title="{{ awarditem.award.name}}" class="award-{{ awarditem.award.animation }}"><strong>{{ awarditem.quantity }}</strong>
                                                     {% endfor %}
 
                                                 </div>
@@ -291,7 +292,7 @@
 
                                         {% for reply in comment.replies %}
                                         <div class="media mt-4 pt-0">
-                                            <a class="pr-3" href="#"><img class="rounded-circle" alt="Mr Banks" src="https://i.imgur.com/nUNhspp.jpg" /></a>
+                                            <a class="pr-3" href="#"><img class="rounded-circle" alt="{{reply.author.name}}" src="{{ MEDIA_URL }}{{ reply.author.avatar }}" /></a>
                                             <div class="media-body">
 
                                                 <div class="row">
@@ -299,8 +300,8 @@
                                                          <h5>
                                                              <!--{{reply.author.username}}-->
                                                              <span>
-                                                                 Mr Banks<!--<img src="{% static 'img/verify.png' %}" class="verified text-center">-->
-<!--                                                                 Mr Banks ({{reply.author.username}})&lt;!&ndash;<img src="{% static 'img/verify.png' %}" class="verified text-center">&ndash;&gt;-->
+                                                                 {{reply.author.name}}{% if reply.author.is_verified %}<img src="{% static 'img/verify.png' %}" class="verified text-center">{%endif%}
+
                                                              </span>
                                                              <span class="time">- {{ reply.time_ago }}</span>
                                                          </h5>
@@ -315,7 +316,7 @@
                                                                 title="{{ awarditem.award.name}}"
                                                                 class="award-{{ awarditem.award.animation }}"
                                                         >
-                                                        <strong>{{ awarditem.award_quantity }}</strong>
+                                                        <strong>{{ awarditem.quantity }}</strong>
                                                         {% endfor %}
                                                     </div>
                                                     {% endif %}
@@ -378,7 +379,7 @@
                                                                                  alt="{{awarditem.award.name}} - Award"
                                                                                  title="{{ awarditem.award.name}}"
                                                                                  class="award-none"
-                                                                            >{{ awarditem.award.name}}<strong class="d-flex" style="justify-content: right;">1</strong></a>
+                                                                            >{{ awarditem.award.name}}<strong class="d-flex" style="justify-content: right;">{{ awarditem.quantity}}</strong></a>
                                                                         {% endfor %}
                                                                         {%endif%}
 
@@ -435,8 +436,8 @@
                                                             <form method="post" action="/add_reply/">
                                                                 {% csrf_token %}
                                                                 <input type="hidden" name="comment" value="{{comment.id}}">
-                                                                <input type="hidden" name="recipent" value="Mr Banks">
-<!--                                                                <input type="hidden" name="recipent" value="Mr Banks ({{reply.author.username}})">-->
+<!--                                                                <input type="hidden" name="recipent" value="Mr Banks">-->
+                                                                <input type="hidden" name="recipent" value="{{reply.author.name}}">
                                                                 <textarea class="form-control mr-sm-2" name="content"
                                                                           id="subtextbox-{{comment.id}}-{{reply.id}}"
                                                                           style="height: 70px;"
@@ -452,7 +453,7 @@
 
                                                 <div class="col-2 d-none d-lg-block text-center">
                                                     {% for awarditem in reply.awards %}
-                                                    <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}" alt="{{awarditem.award.name}} - Award" title="{{ awarditem.award.name}}" class="award-{{ awarditem.award.animation }}"><strong>{{ awarditem.award_quantity }}</strong>
+                                                    <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}" alt="{{awarditem.award.name}} - Award" title="{{ awarditem.award.name}}" class="award-{{ awarditem.award.animation }}"><strong>{{ awarditem.quantity }}</strong>
                                                     {% endfor %}
 
 

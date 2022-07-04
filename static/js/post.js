@@ -83,25 +83,32 @@ for (var i=0; i<commentVoteBtns.length; i++){
 }
 
 for (var i=0; i<replyVoteBtns.length; i++){
-    replyVoteBtns[i].addEventListener('click', function (){
-        if (user == 'AnonymousUser' || this.classList.contains('selected')){
+    replyVoteBtns[i].addEventListener('click', function (e){
+        if (user == 'AnonymousUser'){
+
             this.style.animation = 'award-shake 1s';
+            alerT(e, 'Oops! You have to be logged in to vote', '#C94B0C');
 
         }else{
-            this.style.animation = 'award-rotate 1s';
+             if (this.classList.contains('selected')){
 
-        }
+                this.style.animation = 'award-shake 1s';
+            }else{
+                this.style.animation = 'award-rotate 1s';
+
+            }
         
-        var slug = this.dataset.article
-        var comment_id = this.dataset.comment
-        var id = this.dataset.reply
-        var poll = this.dataset.poll
-        console.log('Slug:', slug)
-        console.log('Comment ID:', comment_id)
-        console.log('Reply ID:', id)
-        console.log('Poll:', poll)
-        console.log('USER:', user)
-        updateReplyVote(slug, poll, comment_id, id)
+            var slug = this.dataset.article
+            var comment_id = this.dataset.comment
+            var id = this.dataset.reply
+            var poll = this.dataset.poll
+            console.log('Slug:', slug)
+            console.log('Comment ID:', comment_id)
+            console.log('Reply ID:', id)
+            console.log('Poll:', poll)
+            console.log('USER:', user)
+            updateReplyVote(slug, poll, comment_id, id)
+            }
     })
 
 }
