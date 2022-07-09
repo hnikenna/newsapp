@@ -50,7 +50,7 @@ class AwardItem(models.Model):
 
 class Reply(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    # respondee = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    recipent = models.CharField(max_length=50, null=True)
     content = models.TextField()
     yes_vote = models.IntegerField(default=0)
     no_vote = models.IntegerField(default=0)
@@ -101,7 +101,7 @@ class Reply(models.Model):
         if len(awards) <= 0:
             return False
         return True
-    
+
     @property
     def get_votes(self):
         votes = VoteItem.objects.filter(parent='r', parent_id=self.id)

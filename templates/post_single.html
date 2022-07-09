@@ -76,7 +76,7 @@
 
 </div>
 <br/>
-<div class="text-center col-12">
+<div class="text-center col-12"  id="discussion">
 <!--        <h3>Sign Up / Log In to discuss</h3>-->
         <h3>Where do you stand on this topic?</h3>
             <div class="row" id="articlevotes">
@@ -98,7 +98,7 @@
 
 <div class="container mb-5 mt-5" style="position: relative;">
 
-			     <div class="card"  id="discussion">
+			     <div class="card">
 					<div class="row">
 						<div class="col-md-12">
                                 <div class="commentHeader"><!-- define relative so child absolute's are based on this elements origin -->
@@ -121,7 +121,7 @@
 									<div class="media mt-4">
 <!--										<img class="mr-3 rounded-circle" alt="Bootstrap Media Preview" src="https://i.imgur.com/xELPaag.jpg" />-->
 <!--                                        <a class="pr-3" href="#"><img class="rounded-circle" alt="Sholake Adeyemi" src="https://i.imgur.com/xELPaag.jpg" /></a>-->
-                                        <a class="pr-3" href="#"><img class="rounded-circle" alt="{{comment.author.name}}" src="{{ MEDIA_URL }}{{ comment.author.avatar }}" /></a>
+                                        <a class="pr-3" href="/accounts/{{comment.author}}/"><img class="rounded-circle" alt="{{comment.author.name}}" src="{{ MEDIA_URL }}{{ comment.author.avatar }}" /></a>
 
 										<div class="media-body">
 											<div class="row">
@@ -129,6 +129,7 @@
                                                      <h5>
                                                          <!--{{comment.author.username}}-->
                                                          <span>
+<!--                                                             Sholake Adeyemi{% if comment.author.is_verified %}<img src="{% static 'img/verify.png' %}" class="verified text-center">{%endif%}</span>-->
                                                              {{comment.author.name}}{% if comment.author.is_verified %}<img src="{% static 'img/verify.png' %}" class="verified text-center">{%endif%}</span>
                                                          <span class="time">- {{comment.time_ago }}</span>
                                                      </h5>
@@ -292,7 +293,7 @@
 
                                         {% for reply in comment.replies %}
                                         <div class="media mt-4 pt-0">
-                                            <a class="pr-3" href="#"><img class="rounded-circle" alt="{{reply.author.name}}" src="{{ MEDIA_URL }}{{ reply.author.avatar }}" /></a>
+                                            <a class="pr-3" href="/accounts/{{reply.author}}/"><img class="rounded-circle" alt="{{reply.author.name}}" src="{{ MEDIA_URL }}{{ reply.author.avatar }}" /></a>
                                             <div class="media-body">
 
                                                 <div class="row">
@@ -300,8 +301,9 @@
                                                          <h5>
                                                              <!--{{reply.author.username}}-->
                                                              <span>
+<!--                                                                 Mr Banks {% if reply.author.is_verified %}<img src="{% static 'img/verify.png' %}" class="verified text-center">{%endif%}-->
                                                                  {{reply.author.name}}{% if reply.author.is_verified %}<img src="{% static 'img/verify.png' %}" class="verified text-center">{%endif%}
-
+                                                                 <span style="color: #808B8C; font-size: 13px;"> &#8611; {{reply.recipent}}</span>
                                                              </span>
                                                              <span class="time">- {{ reply.time_ago }}</span>
                                                          </h5>

@@ -2,12 +2,13 @@ from django.contrib.auth.models import AbstractUser
 from newsapp.models import AwardItem
 from django.db import models
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomUser(AbstractUser):
-    first_name = models.CharField(blank=True, null=True, max_length=50)
-    last_name = models.CharField(blank=True, null=True, max_length=50)
-    phone = models.CharField(blank=True, null=True, max_length=16)
+    email = models.EmailField(_('email address'), unique=True)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
     def save(self, *args, **kwargs):
         try:
@@ -44,12 +45,18 @@ class CustomUser(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.PROTECT)
+    username = models.CharField(blank=True, null=True, max_length=50)
+    first_name = models.CharField(blank=True, null=True, max_length=50)
+    last_name = models.CharField(blank=True, null=True, max_length=50)
+    phone = models.CharField(blank=True, null=True, max_length=16)
     is_verified = models.BooleanField(default=False)
     avatar = models.ImageField(upload_to='avatars', blank=True, null=False, default='static_media/user.png')
     award = models.ManyToManyField(AwardItem, blank=True)
 
     def save(self, *args, **kwargs):
         try:
+            # Update username
+            self.username = self.user.name
             this = Profile.objects.get(id=self.id)
             if this.avatar != self.avatar and this.avatar != 'static_media/user.png':
                 this.avatar.delete(save=False)
@@ -62,3 +69,10 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.name
+
+    @property
+    def fullname(self):
+        first = self.first_name if self.first_name else ' '
+        last = self.last_name if self.last_name else ' '
+
+        return str(first + ' ' + last)

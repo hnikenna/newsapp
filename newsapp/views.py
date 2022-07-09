@@ -284,10 +284,10 @@ def addReply(request):
         content = data['content']
         recipent = data['recipent']
         # verified_img = '<img src="/static/img/verify.png" class="verified text-center">'
-        content = f"<span style='color: #3932be'>@{recipent}</span> {content}"
+        # content = f"<span style='color: #3932be'>@{recipent}</span> {content}"
         comment = data['comment']
         comment = get_object_or_404(Comment, id=comment)
-        reply = Reply(author=user, content=content)
+        reply = Reply(author=user, content=content, recipent=recipent)
         reply.yes_vote += 1
         reply.save()
         comment.reply.add(reply)
