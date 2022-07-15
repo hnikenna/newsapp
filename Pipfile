@@ -12,6 +12,7 @@ django-tagging = "*"
 datetime = "*"
 django-crispy-forms = "*"
 django-imagekit = "*"
+gunicorn = "*"
 
 [dev-packages]
 

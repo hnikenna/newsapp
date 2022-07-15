@@ -151,3 +151,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_PASSWORD = 'mys3cr3tp4ssw0rd'
 # EMAIL_USE_TLS = True
 # DEFAULT_FROM_EMAIL = 'TestSite Team <noreply@example.com>'
+
+
+ALLOWED_HOSTS = ['*']       
