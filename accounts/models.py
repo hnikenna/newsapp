@@ -1,8 +1,10 @@
 from django.contrib.auth.models import AbstractUser
-from newsapp.models import AwardItem
 from django.db import models
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
+
+from newsapp.models import AwardItem
+from news_project.utils import *
 
 
 class CustomUser(AbstractUser):
@@ -38,20 +40,51 @@ class CustomUser(AbstractUser):
 
     @property
     def awards(self):
-        profile = get_object_or_404(Profile, user=self)
-        awards = profile.award.all()
+        # awards = AwardItem.objects.filter(owner=self)
+        awards = AwardItem.objects.filter(owner=self, parent_id=None)
+        # awards2 = AwardItem.objects.all()
+        # for award in awards2:
+        #     print(type(award.parent_id))
+        #     print(award.parent_id is None)
         return awards
+
+    @property
+    def awards_received(self):
+        awards = AwardItem.objects.filter(owner=self)
+        awards2 = []
+        for award in awards:
+            if award.parent_id is not None:
+                awards2.append(award)
+            # print(award.parent_id is None)
+        return awards2
+
+    @property
+    def exchangeval(self):
+        awards = AwardItem.objects.filter(owner=self)
+        awards2 = 0
+        # awards2 = {}
+        for award in awards:
+            if award.parent_id is not None:
+                awards2 += (award.award.price * award.quantity) / 5
+
+        awards2 = format_currency(awards2)
+        return awards2
 
 
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.PROTECT)
     username = models.CharField(blank=True, null=True, max_length=50)
-    first_name = models.CharField(blank=True, null=True, max_length=50)
-    last_name = models.CharField(blank=True, null=True, max_length=50)
+    full_name = models.CharField(blank=True, null=True, max_length=100)
     phone = models.CharField(blank=True, null=True, max_length=16)
+    bio = models.TextField(blank=True, null=True, max_length=250)
+    website = models.CharField(blank=True, null=True, max_length=100)
+    facebook = models.CharField(blank=True, null=True, max_length=50)
+    twitter = models.CharField(blank=True, null=True, max_length=50)
+    instagram= models.CharField(blank=True, null=True, max_length=50)
+    tiktok = models.CharField(blank=True, null=True, max_length=50)
     is_verified = models.BooleanField(default=False)
     avatar = models.ImageField(upload_to='avatars', blank=True, null=False, default='static_media/user.png')
-    award = models.ManyToManyField(AwardItem, blank=True)
+    # award = models.ManyToManyField(AwardItem, blank=True)
 
     def save(self, *args, **kwargs):
         try:
@@ -69,10 +102,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.name
-
-    @property
-    def fullname(self):
-        first = self.first_name if self.first_name else ' '
-        last = self.last_name if self.last_name else ' '
-
-        return str(first + ' ' + last)

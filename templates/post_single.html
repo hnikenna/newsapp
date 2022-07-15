@@ -7,7 +7,7 @@
 {% block content %}
 
 
-<div class="text-center">
+<div class="text-center" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
   <img src="{{ MEDIA_URL }}{{ article.image }}" class="rounded header-image" alt="..." width="80%">
 <!--  <img src="{% static 'img/banner3.jpg' %}" class="rounded" alt="..." width="80%">-->
         <h2 style="text-decoration: overline;">{{ article.title }}</h2>
@@ -98,7 +98,7 @@
 
 <div class="container mb-5 mt-5" style="position: relative;">
 
-			     <div class="card">
+    <div class="card">
 					<div class="row">
 						<div class="col-md-12">
                                 <div class="commentHeader"><!-- define relative so child absolute's are based on this elements origin -->
@@ -170,7 +170,7 @@
                                                                     {% endfor %}
                                                                     "
                                                                  data-poll="yes"
-                                                                 data-comment="{{comment.id}}"
+                                                                 data-comment="{{comment.get_anon_id}}"
                                                                  data-article="{{ article.slug }}"
 
                                                             >{{ comment.yes_vote }}
@@ -189,29 +189,48 @@
 
                                                                  "
                                                                  data-poll="no"
-                                                                 data-comment="{{comment.id}}"
+                                                                 data-comment="{{comment.get_anon_id}}"
                                                                  data-article="{{ article.slug }}"
                                                             >{{ comment.no_vote }}
-                                                            <a class="replybtn button" data-comment="{{comment.id}}"><img src="{% static 'img/reply-message.png' %}" class="button">Reply</a>
+                                                            <a class="replybtn button" data-comment="{{comment.get_anon_id}}"><img src="{% static 'img/reply-message.png' %}" class="button">Reply</a>
                                                             <a><img src="{% static 'img/send.png' %}" class="button">Share</a>
-                                                            <a class="awardBtn {{comment.id}}"><img src="{% static 'img/badge.png' %}" class="button">Award</a>
-                                                            <a><img src="{% static 'img/police.png' %}" class="button">Report</a>
+                                                            {% if comment.author != request.user %}
+                                                            <a class="awardBtn {{comment.get_anon_id}}"><img src="{% static 'img/badge.png' %}" class="button">Award</a>
+                                                            <a><img src="{% static 'img/police.png' %}" class="button reportbtn" data-id="{{comment.get_anon_id}}"><span>Report</span></a>
+                                                            {% else %}
+<!--                                                            <a id="del_com" href="javascript: $('#del_{{comment.get_anon_id}}').toggle()" style="color: #C9281A;"><i class="button mr-1 fa fa-close fa-lg" style="height: 15px;"></i>Delete</a>-->
+                                                            <a class="deletebtn" data-type="comment" data-id='{{comment.get_anon_id}}' style="color: #C9281A;"><i class="button mr-1 fa fa-close fa-lg" style="height: 15px;"></i>Delete</a>
+                                                            <div id="del_{{comment.get_anon_id}}" style="display: none;">
+                                                                <br><p>Are you sure you want to delete this comment?</p>
+                                                                <div class="d-inline">
+                                                                <button class="btn btn-danger mr-5" onclick="window.location.href='/delete/comment/{{comment.get_anon_id}}'">Yes</button>
+                                                                <button class="btn btn-dark ml-5" onclick="$('#del_{{comment.get_anon_id}}').hide()">No</button><br>
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
                                                         </div>
-                                                        <div class="container db ml-5 mb-3 pb-3 pt-2" id="db-{{comment.id}}">
+                                                        <div class="container db ml-5 mb-3 pb-3 pt-2" id="db-{{comment.get_anon_id}}">
                                                                 <div class="row">
                                                                         {% if user.awards|length < 1 %}
                                                                     <div class="col"  style="display: flex; justify-content: center; align-items: center;">
                                                                         <div class="text-center">
+                                                                            {% if not user.is_authenticated %}
+                                                                            <h4 class="dropdown-item">Anonymous Gifting</h4>
+                                                                            <img src="{% static 'img/guest-star.png' %}" width="100%"><br>
+                                                                            <p class="dropdown-item">Do you like <strong>{{comment.author}}</strong>'s comment?<br>Send a gift</p>
+                                                                            {% comment %} <p class="dropdown-item">Gift <strong>{{comment.author}}</strong>'s comment an award</p> {% endcomment %}
+                                                                            <p class="dropdown-item"><a href="/accounts/login"><b>Sign in</b></a> to receive <strong style="color: red;">4 extra awards</strong> after every purchase</p>
+                                                                            {%else%}
                                                                             <img src="{% static 'img/cancel.png' %}" width="90%"><br>
                                                                             <p class="dropdown-item" style="color: red;">You do not have any award to gift</p>
-
+                                                                            {% endif %}
                                                                         </div>
                                                                         {%else%}
                                                                         <div class="col">
                                                                         <h5 class="text-center">Your Awards</h5>
                                                                             <div class="dropdown-divider"></div>
                                                                         {% for awarditem in user.awards %}
-                                                                        <a class="dropdown-item" href="#">
+                                                                        <a class="dropdown-item gift" data-id="{{awarditem.get_anon_id}}" data-owner="{{comment.author}}" data-parent="{{comment.get_anon_id}}" data-award="{{awarditem.award.id}}">
                                                                             <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}"
                                                                                  alt="{{awarditem.award.name}} - Award"
                                                                                  title="{{ awarditem.award.name}}"
@@ -252,8 +271,11 @@
                                                                                 </td>
                                                                                 <td>
                                                                                     <br>
-                                                                                    <button class="btn btn-outline-dark ml-4" onclick="dev();">Buy</button>
-
+                                                                                    {% if user.is_authenticated %}
+                                                                                    <button class="btn btn-main ml-4 buyGift" data-auth="" data-id="{{awarditem.get_anon_id}}" data-owner="{{user}}" data-parent="" data-award="{{award.id}}" data-extra="{{award.price}}, {{award.name}}, {{user.email}}">Buy x5</button>
+                                                                                    {% else %}
+                                                                                    <button class="btn btn-main ml-4 buyGift" data-auth="guest" data-id="{{awarditem.get_anon_id}}" data-owner="{{comment.author}}" data-parent="{{comment.get_anon_id}}" data-award="{{award.id}}" data-extra="{{award.price}}, {{award.name}}, guest@email.com">Gift</button>
+                                                                                    {% endif %}
                                                                                 </td>
                                                                             </tr>
                                                                             {% endfor %}
@@ -267,13 +289,13 @@
 
 
 <!--                                                        Reply Box-->
-                                                        <div style="display: none;" id="replybox-{{comment.id}}">
+                                                        <div style="display: none;" id="replybox-{{comment.get_anon_id}}">
                                                             <form method="post" action="/add_reply/">
                                                                 {% csrf_token %}
-                                                                <input type="hidden" name="comment" value="{{comment.id}}">
+                                                                <input type="hidden" name="comment" value="{{comment.get_anon_id}}">
 <!--                                                                <input type="hidden" name="recipent" value="Sholake Adeyemi">-->
                                                                 <input type="hidden" name="recipent" value="{{comment.author.name}}">
-                                                                <textarea class="form-control mr-sm-2" name="content" id="textbox-{{comment.id}}" style="height: 70px;" required></textarea>
+                                                                <textarea class="form-control mr-sm-2" name="content" id="textbox-{{comment.get_anon_id}}" style="height: 70px;" required></textarea>
                                                                 <button class="btn btn-dark my-2 my-sm-0" type="submit">Send</button>
                                                             </form>
                                                         </div>
@@ -339,8 +361,8 @@
                                                                         {% endfor %}
                                                                         "
                                                                  data-poll="yes"
-                                                                 data-comment="{{comment.id}}"
-                                                                 data-reply="{{reply.id}}"
+                                                                 data-comment="{{comment.get_anon_id}}"
+                                                                 data-reply="{{reply.get_anon_id}}"
                                                                  data-article="{{ article.slug }}"
                                                             >{{ reply.yes_vote }}
                                                             <img src="{% static 'img/down-arrow.png' %}"
@@ -353,30 +375,46 @@
                                                                         {% endfor %}
                                                                  "
                                                                  data-poll="no"
-                                                                 data-comment="{{comment.id}}"
-                                                                 data-reply="{{reply.id}}"
+                                                                 data-comment="{{comment.get_anon_id}}"
+                                                                 data-reply="{{reply.get_anon_id}}"
                                                                  data-article="{{ article.slug }}"
                                                             >{{ reply.no_vote }}
-                                                            <a class="subreplybtn button" data-reply="{{comment.id}}-{{reply.id}}"><img src="{% static 'img/reply-message.png' %}" class="button">Reply</a>
+                                                            <a class="subreplybtn button" data-reply="{{comment.get_anon_id}}-{{reply.get_anon_id}}"><img src="{% static 'img/reply-message.png' %}" class="button">Reply</a>
                                                             <a><img src="{% static 'img/send.png' %}" class="button">Share</a>
-                                                            <!--                                                            <a href="#"><img src="{% static 'img/badge.png' %}" class="button">Award</a>-->
-                                                            <a class="awardBtn {{comment.id}}-{{reply.id}}"><img src="{% static 'img/badge.png' %}" class="button">Award</a>
-                                                            <a><img src="{% static 'img/police.png' %}" class="button">Report</a>
-                                                            <div class="container db ml-5 mb-3 pb-3 pt-2" id="db-{{comment.id}}-{{reply.id}}">
+                                                            {% if reply.author != request.user %}
+                                                            <a class="awardBtn {{comment.get_anon_id}}-{{reply.get_anon_id}}"><img src="{% static 'img/badge.png' %}" class="button">Award</a>
+                                                            <a><img src="{% static 'img/police.png' %}" class="button reportbtn" data-id="{{reply.get_anon_id}}">Report</a>
+                                                            {% else %}
+                                                            <a class="deletebtn" data-type="reply" data-id='{{reply.get_anon_id}}' style="color: #C9281A;"><i class="button mr-1 fa fa-close fa-lg" style="height: 15px;"></i>Delete</a>
+                                                            <div id="del_{{reply.get_anon_id}}" style="display: none;">
+                                                                <br><p>Are you sure you want to delete this comment?
+                                                                <div class="d-inline">
+                                                                <button class="btn btn-danger mr-5" onclick="window.location.href='/delete/reply/{{reply.get_anon_id}}'">Yes</button>
+                                                                <button class="btn btn-dark ml-5" onclick="$('#del_{{reply.get_anon_id}}').hide()">No</button><br>
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                            <div class="container db ml-5 mb-3 pb-3 pt-2" id="db-{{comment.get_anon_id}}-{{reply.get_anon_id}}">
                                                                 <div class="row">
                                                                         {% if user.awards|length < 1 %}
                                                                     <div class="col"  style="display: flex; justify-content: center; align-items: center;">
                                                                         <div class="text-center">
+                                                                            {% if not user.is_authenticated %}
+                                                                            <h4 class="dropdown-item">Anonymous Gifting</h4>
+                                                                            <img src="{% static 'img/guest-star.png' %}" width="100%"><br>
+                                                                            <p class="dropdown-item">Gift <strong>{{reply.author}}</strong>'s comment an award</p>
+                                                                            <p class="dropdown-item"><a href="/accounts/login"><b>Sign in</b></a> to receive <strong style="color: red;">4 extra awards</strong> after every purchase</p>
+                                                                            {%else%}
                                                                             <img src="{% static 'img/cancel.png' %}" width="90%"><br>
                                                                             <p class="dropdown-item" style="color: red;">You do not have any award to gift</p>
-
+                                                                            {% endif %}
                                                                         </div>
                                                                         {%else%}
                                                                         <div class="col">
                                                                         <h5 class="text-center">Your Awards</h5>
                                                                             <div class="dropdown-divider"></div>
                                                                         {% for awarditem in user.awards %}
-                                                                        <a class="dropdown-item" href="#">
+                                                                        <a class="dropdown-item gift">
                                                                             <img src="{% static 'img/awards' %}/{{ awarditem.award.image }}"
                                                                                  alt="{{awarditem.award.name}} - Award"
                                                                                  title="{{ awarditem.award.name}}"
@@ -422,7 +460,11 @@
                                                                                 </td>
                                                                                 <td>
                                                                                     <br>
-                                                                                    <button class="btn btn-outline-dark ml-4" onclick="dev();">Buy</button>
+                                                                                    {% if user.is_authenticated %}
+                                                                                    <button class="btn btn-main ml-4 buyGift" data-auth="" data-id="{{awarditem.get_anon_id}}" data-owner="{{user}}" data-parent="" data-award="{{award.id}}" data-extra="{{award.price}}, {{award.name}}, {{user.email}}">Buy x5</button>
+                                                                                    {% else %}
+                                                                                    <button class="btn btn-main ml-4 buyGift" data-auth="guest" data-id="{{awarditem.get_anon_id}}" data-owner="{{reply.author}}" data-parent="{{reply.get_anon_id}}" data-award="{{award.id}}" data-extra="{{award.price}}, {{award.name}}, guest@email.com">Gift</button>
+                                                                                    {% endif %}
 
                                                                                 </td>
                                                                             </tr>
@@ -434,14 +476,14 @@
 
 
                                                         </div>
-                                                        <div style="display: none;" id="subreplybox-{{comment.id}}-{{reply.id}}">
+                                                        <div style="display: none;" id="subreplybox-{{comment.get_anon_id}}-{{reply.get_anon_id}}">
                                                             <form method="post" action="/add_reply/">
                                                                 {% csrf_token %}
-                                                                <input type="hidden" name="comment" value="{{comment.id}}">
+                                                                <input type="hidden" name="comment" value="{{comment.get_anon_id}}">
 <!--                                                                <input type="hidden" name="recipent" value="Mr Banks">-->
                                                                 <input type="hidden" name="recipent" value="{{reply.author.name}}">
                                                                 <textarea class="form-control mr-sm-2" name="content"
-                                                                          id="subtextbox-{{comment.id}}-{{reply.id}}"
+                                                                          id="subtextbox-{{comment.get_anon_id}}-{{reply.get_anon_id}}"
                                                                           style="height: 70px;"
                                                                           required
                                                                 ></textarea>
@@ -479,6 +521,8 @@
                 </div>
 </div>
 
-{% endblock %}
 
 </div>
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+</div>
+{% endblock %}

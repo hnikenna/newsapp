@@ -1,14 +1,13 @@
 import json
-import random
 
-from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
-from django.urls.base import reverse_lazy
-from django.views.generic import TemplateView, ListView
+from django.views.generic import ListView
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import *
 from .models import *
+from accounts.models import CustomUser
 
 
 # Create your views here.
@@ -22,8 +21,8 @@ def post(request, slug):
     user = request.user
     article = get_object_or_404(Article, slug=slug)
     all_awards = Award.objects.all()
-    # all_articles = Article.objects.all()[:4]
     featured = Article.objects.all()[:3]
+    # all_articles = Article.objects.all()[:4]
     # featured = random.choices(all_articles, weights=None, cum_weights=None, k=4)
 
     # Code to display user article choices on page
@@ -124,7 +123,7 @@ def updateCommentVote(request):
     id = data['ID']
 
     article = get_object_or_404(Article, slug=slug)
-    comment = get_object_or_404(article.comments, id=id)
+    comment = get_object_or_404(article.comments, anon_id=id)
 
     # Handle guest users:
     if not user.is_authenticated:
@@ -185,8 +184,8 @@ def updateReplyVote(request):
     id = data['ID']
 
     article = get_object_or_404(Article, slug=slug)
-    comment = get_object_or_404(article.comments, id=comment_id)
-    reply = get_object_or_404(comment.replies, id=id)
+    comment = get_object_or_404(article.comments, anon_id=comment_id)
+    reply = get_object_or_404(comment.replies, anon_id=id)
 
     # if user is guest:
     if not user.is_authenticated:
@@ -265,7 +264,8 @@ def addComment(request, slug):
         return JsonResponse('Form ain\'t valid', safe=False)
 
     # return JsonResponse('Comment Received', safe=False)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return go_back(request)
     # return HttpResponseRedirect(f'/post/{slug}')
     # return HttpResponse('<script>location.replace(document.referrer);</script>')
 
@@ -286,7 +286,7 @@ def addReply(request):
         # verified_img = '<img src="/static/img/verify.png" class="verified text-center">'
         # content = f"<span style='color: #3932be'>@{recipent}</span> {content}"
         comment = data['comment']
-        comment = get_object_or_404(Comment, id=comment)
+        comment = get_object_or_404(Comment, anon_id=comment)
         reply = Reply(author=user, content=content, recipent=recipent)
         reply.yes_vote += 1
         reply.save()
@@ -302,4 +302,81 @@ def addReply(request):
     else:
         print('Form ain\'t valid')
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return go_back(request)
+
+
+def contact(request):
+    form = ContactForm
+    return render(request, 'contact.html', {'form': form})
+
+
+def delete(request, type, id):
+    user = request.user
+
+    types = {'post': Article, 'comment': Comment, 'reply': Reply}
+    in_type = types.get(type)
+
+    if not in_type:
+        return JsonResponse('Error with deletion', safe=False)
+
+    i_object = get_object_or_404(in_type, anon_id=id)
+
+    if i_object.author == user:
+        if i_object.content == '--deleted--':
+            i_object.delete()
+        else:
+            i_object.content = '--deleted--'
+            i_object.save()
+
+        # Pro feature
+        # i_object.delete()
+        return go_back(request)
+
+    else:
+        return JsonResponse('Error with deletion', safe=False)
+
+@csrf_exempt
+def gift(request):
+    user = request.user
+    data = json.loads(request.body)
+    # print('Data:', data)
+    id = data['id']
+    owner = data['owner']
+    parent = data['parent']
+    quantity = data['quantity']
+    award_id = data['award']
+
+    if id:
+        awarditem = get_object_or_404(AwardItem, anon_id=id)
+        if awarditem.quantity == 0:
+            awarditem.delete()
+        else:
+            awarditem.quantity -= 1
+            awarditem.save()
+    award = get_object_or_404(Award, id=award_id)
+    owner = get_object_or_404(CustomUser, username=owner)
+
+    new_award, created = AwardItem.objects.get_or_create(owner=owner, award=award, parent_id=parent)
+    print(created)
+    new_award.get_anon_id()
+    new_award.quantity += quantity
+    new_award.save()
+
+    return JsonResponse('Done', safe=False)
+
+@csrf_exempt
+def awardTransaction(request):
+    user = request.user
+    data = json.loads(request.body)
+    print('Data:', data)
+    status = data['status']
+    email = data['email']
+    award = data['award']
+    price = data['price']
+
+    award = get_object_or_404(Award, name=award)
+    award_tf = AwardTransaction(award=award, status=status, email=email, price=price)
+    award_tf.save()
+    return JsonResponse(
+        'Logged', safe=False
+    )

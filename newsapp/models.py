@@ -6,7 +6,8 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
 from django.urls import reverse
-from .utils import breadcrumb
+
+from news_project.utils import *
 # from django.contrib.auth import get_user_model
 
 
@@ -33,10 +34,14 @@ class Award(models.Model):
 
 class AwardItem(models.Model):
 
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     award = models.ForeignKey(Award, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=0)
+    anon_id = models.CharField(max_length=15, default='', blank=True, null=True)
+    parent_id = models.CharField(max_length=15, default='', blank=True, null=True)
 
     def __str__(self):
+        # return self.anon_id
         return str(self.quantity) + ' - ' + self.award.name
 
     def save(self, *args, **kwargs):
@@ -44,8 +49,11 @@ class AwardItem(models.Model):
             if self.quantity <= 0:
                 self.delete()
         except:
-            pass  # when new photo then we do nothing, normal case
+            pass
         super().save(*args, **kwargs)
+
+    def get_anon_id(self):
+        return anon_id(self, 'ax', 12)
 
 
 class Reply(models.Model):
@@ -54,16 +62,20 @@ class Reply(models.Model):
     content = models.TextField()
     yes_vote = models.IntegerField(default=0)
     no_vote = models.IntegerField(default=0)
-    award = models.ManyToManyField(AwardItem, blank=True)
+    # award = models.ManyToManyField(AwardItem, blank=True)
     date = models.DateTimeField(auto_now_add=True)
+    anon_id = models.CharField(blank=True, null=True, unique=True, max_length=15)
 
     def __str__(self):
         return self.author.username + ' - ' + str(self.content[:100])
 
+    def get_anon_id(self):
+        return anon_id(self, 'rc', 12)
+
     @property
     def awards(self):
-        awards = self.award.all()
-        # print(awards)
+        # awards = self.award.all()
+        awards = AwardItem.objects.filter(owner=self.author, parent_id=self.anon_id)
         return awards
 
     @property
@@ -96,7 +108,7 @@ class Reply(models.Model):
 
     @property
     def is_award(self):
-        awards = self.award.all()
+        awards = self.awards
         # print('Awards:', len(awards))
         if len(awards) <= 0:
             return False
@@ -114,19 +126,20 @@ class Comment(models.Model):
     content = models.TextField()
     yes_vote = models.IntegerField(default=0)
     no_vote = models.IntegerField(default=0)
-    award = models.ManyToManyField(AwardItem, blank=True)
     # reply = models.ManyToManyField('self', null=True, blank=True)
     reply = models.ManyToManyField(Reply, blank=True)
     date = models.DateTimeField(auto_now_add=True)
-    # voter = models.F
+    anon_id = models.CharField(blank=True, null=True, unique=True, max_length=15)
 
     def __str__(self):
         return self.author.username + ' - ' + str(self.content[:30])
 
+    def get_anon_id(self):
+        return anon_id(self, 'ck', 12)
+
     @property
     def awards(self):
-        awards = self.award.all()
-        # print(awards)
+        awards = AwardItem.objects.filter(owner=self.author, parent_id=self.anon_id)
         return awards
 
     @property
@@ -167,7 +180,7 @@ class Comment(models.Model):
 
     @property
     def is_award(self):
-        awards = self.award.all()
+        awards = self.awards
         # print('Awards:', len(awards))
         if len(awards) == 0:
             return False
@@ -194,10 +207,13 @@ class Article(models.Model):
     yes_vote = models.IntegerField(default=0)
     no_vote = models.IntegerField(default=0)
     comment = models.ManyToManyField(Comment, blank=True)
-    # voter = models.ManyToManyField
+    anon_id = models.CharField(blank=True, null=True, unique=True, max_length=15)
 
     def __str__(self):
         return self.title
+
+    def get_anon_id(self):
+        return anon_id(self, 'pa', 12)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
@@ -278,12 +294,26 @@ class VoteItem(models.Model):
     POLL_CHOICE = [('yes', 'Yes'), ('no', 'No')]
     parent = models.CharField(max_length=1, choices=PARENT_TYPES)
     parent_id = models.PositiveIntegerField()
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True)
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
-    reply = models.ForeignKey(Reply, on_delete=models.CASCADE, null=True)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True)
+    reply = models.ForeignKey(Reply, on_delete=models.CASCADE, null=True, blank=True)
     voter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     choice = models.CharField(max_length=3, choices=POLL_CHOICE, blank=True)
 
     def __str__(self):
         return self.parent + ' - ' + self.voter.username
 
+
+class AwardTransaction(models.Model):
+    award = models.ForeignKey(Award, on_delete=models.CASCADE)
+    anon_id = models.CharField(blank=True, null=True, unique=True, max_length=15)
+    status = models.CharField(blank=True, default='initialized', max_length=20)
+    email = models.EmailField(default='guest@email.com')
+    price = models.PositiveIntegerField(default=0, blank=True)
+
+    def __str__(self):
+        return self.get_anon_id()
+
+    def get_anon_id(self):
+        id = anon_id(self, 'tw', 12)
+        return id

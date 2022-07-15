@@ -1,0 +1,16 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% block title %}Contact Us{% endblock %}
+{% block contact_active %}active{% endblock %}
+{% block content %}
+<div class="center">
+                <h2  class="text-center" style="font-weight: bolder;">Send us a message</h2>
+                <p>
+                    To contact us, fill up the form given below and submit it. We will reply back to you as soon as possible. Generally, we reply within few hours.
+                </p>
+<!--                <p  class="text-center">Already have an account? <a href="/accounts/login/" style="text-decoration: ;">Sign in</a></p>-->
+                {{ form|crispy }}
+                <button class="btn btn-main" type="submit"><i class="fa fa-lg fa-envelope pull-left" aria-hidden="true" style="width: 32px;"></i>Send email</button><br><br>
+</div>
+{% endblock %}
+

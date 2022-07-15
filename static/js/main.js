@@ -1,9 +1,11 @@
 $('#infobtn').click(function(){alerT('', 'Stop!', 'blue');});
+
 $('#read-more').click(function(){
     $('#mid-content').hide();
     $('#full-content').show();
     console.log($('#mid-content'));
 });
+
 function alerT(event, text='Hey! This is a success message!!', color='green'){
 //    console.log('EResult:', e.result)
 //    if(!event.detail || event.detail == 1){
@@ -20,7 +22,7 @@ function alerT(event, text='Hey! This is a success message!!', color='green'){
         $('#info').fadeOut('slow');
         $('#navHeader').fadeIn();
 
-    }, 4000);
+    }, 5000);
 
 
 };
@@ -44,3 +46,15 @@ $('.awardBtn').click(function(){
 
     awardBox.toggle()
 })
+
+
+function randx(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}

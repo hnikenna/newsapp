@@ -43,47 +43,62 @@
 
 			  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
-				  <li class="nav-item {% block home_active %}{% endblock %}">
+				  	<li class="nav-item {% block home_active %}{% endblock %}">
 					<a class="nav-link" href="/">Home</a>
 				  </li>
-					{% if not user.is_authenticated %}
-						<li class="nav-item {% block signup_active %}{% endblock %}">
-							<a class="nav-link" href="/accounts/signup">Signup</a>
-						</li>
-						<li class="nav-item {% block login_active %}{% endblock %}">
-							<a class="nav-link" href="/accounts/login">Login</a>
-						</li>
-					{% else %}
-						<li class="nav-item">
-<!--							<a class="nav-link disabled" id="dprofile" onclick="dev();">Profile</a>-->
-							<a class="nav-link" id="dprofile" href="/accounts/{{user.username}}">Profile</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="/accounts/logout">Logout</a>
-						</li>
 
-					{% endif %}
+<!--					<li class="nav-item">-->
+<!--							<a class="nav-link" href="/contact">Contact</a>-->
+<!--						</li>-->
 
-<!--				<li class="nav-item dropdown">-->
-<!--					<a class="nav-link dropdown-toggle" href="/accounts/" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--					  Accounts-->
-<!--					</a>-->
-<!--					<div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
-<!--					  <a class="dropdown-item" href="/accounts/login">Login</a>-->
-<!--					  <a class="dropdown-item" href="/accounts/logout">Logout</a>-->
-<!--					  <div class="dropdown-divider"></div>-->
-<!--					  <a class="dropdown-item" href="/accounts/signup">Signup</a>-->
-<!--					</div>-->
+                <li class="nav-item {% block contact_active %}{% endblock %} dropdown">
+                        <a class="nav-link dropdown-toggle" href="/contact" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Contact
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                          <a class="dropdown-item" href="/contact">Careers</a>
+                          <a class="dropdown-item" href="/contact">About Us</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="/contact">Feedback / Suggestions</a>
+                          <a class="dropdown-item" href="/contact">Legal</a>
+                          <a class="dropdown-item" href="/contact">Contact Us</a>
+                        </div>
+                </li>
+
+<!--				  <li class="nav-item">-->
+<!--					<a class="nav-link disabled" href="#">Disabled</a>-->
 <!--				  </li>-->
 
-		<!--		  <li class="nav-item">-->
-		<!--			<a class="nav-link disabled" href="#">Disabled</a>-->
-		<!--		  </li>-->
 				</ul>
-				<form class="form-inline my-2 my-lg-0 float-right">
-				  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-				  <button class="btn btn-light my-2 my-sm-0" type="submit">Search</button>
-				</form>
+<!--                  <form class="form-inline my-2 my-lg-0" style="align: center;">-->
+<!--                      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
+<!--                      <button class="btn btn-light my-2 my-sm-0" type="submit">Search</button>-->
+<!--                  </form>-->
+                  <div class="d-inline my-2 my-lg-0 float-right">
+                    {% if not user.is_authenticated %}
+					<li class="nav-item d-inline my-2 mx-2 my-lg-0">
+						<button class="btn btn-light"><a class="nav-link" href="/accounts/login"><b>Sign In</b></a></button>
+					</li>
+					<li class="nav-item d-inline my-2 mx-2 my-lg-0">
+							<button class="btn btn-light"><a class="nav-link" href="/accounts/signup"><b>Create an Account</b></a></button>
+						</li>
+					{% else %}
+
+					<li class="nav-item  {% block profile_active %}{% endblock %} dropdown">
+						<button><a class="nav-link dropdown-toggle" href="" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<!--						  <img src="{{ MEDIA_URL }}{{ user.avatar }}" style="top: 0;" alt="{{user.username}} Avatar" class="rounded-circle" width="64" height="64">-->
+                            Account
+						</a></button>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item" href="/accounts/{{user.username}}">Profile</a>
+						  	<div class="dropdown-divider"></div>
+							<a class="dropdown-item"
+                               href="/accounts/logout">Logout</a>
+						</div>
+				  </li>
+
+					{% endif %}
+                      </div>
 			  </div>
 			</nav>
 		</div>

@@ -1,8 +1,10 @@
 body{
-    margin-top:20px;
-    color: #1a202c;
+  color: #1a202c;
+/*    color: #F2F4AD;*/
     text-align: left;
-    background-color: #e2e8f0;    
+/*    background-color: #e2e8f0;*/
+    background: black url(../img/banner3.jpg)  no-repeat fixed center;
+/*    background-color: #101D1E;*/
 }
 .main-body {
     padding: 15px;
@@ -18,6 +20,7 @@ body{
     min-width: 0;
     word-wrap: break-word;
     background-color: #fff;
+/*    background-color: #90A6A0;*/
     background-clip: border-box;
     border: 0 solid rgba(0,0,0,.125);
     border-radius: .25rem;
@@ -59,4 +62,10 @@ body{
     padding: 0px 0px 1px 0px;
     pointer-events: none;
 
+}
+
+.award-none {
+    width: 25px;
+    height: 25px;
+    margin: 5px 5px 5px 5px;
 }
